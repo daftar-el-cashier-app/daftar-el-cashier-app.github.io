@@ -470,13 +470,14 @@ $('#ckTabs').addEventListener('click',e=>{if(e.target.closest('[data-f]')){$$('#
 $('#ckClr').onclick=()=>{$$('#ckFlt input').forEach(e=>e.value='');$('#ckFlt select').value='';$('#ckQ').value='';ckRowsDraw()};
 })();
 
-(()=>{const rows=['١٢٣٤٥٦٧٨٩٠','ضصثقفغعهخحجد','شسيبلاتنمكطذ','ئءؤرىةوزظ'];const ta=$('#kbT');
-const draw=()=>{$('#kbK').innerHTML=rows.map(r=>'<div class="kr">'+[...r].map(c=>'<button data-c="'+c+'">'+c+'</button>').join('')+'</div>').join('')+'<div class="kr"><button class="dl" data-a="bs">⌫ مسح حرف</button><button class="w" data-a="sp">مسافة</button><button data-c="،">،</button><button data-c=".">.</button><button data-c="-">-</button></div><div class="kr"><button class="dl" data-a="cl">مسح الكل</button><button class="ok w" data-a="ok">✔ تأكيد التعليق</button></div>';
-$$('#kbK [data-c]').forEach(b=>b.onclick=()=>{ta.value+=b.dataset.c;ta.focus()});
-$$('#kbK [data-a]').forEach(b=>b.onclick=()=>{const a=b.dataset.a;if(a==='bs')ta.value=ta.value.slice(0,-1);else if(a==='sp')ta.value+=' ';else if(a==='cl')ta.value='';else{if(st.locked){toast('الشيك مقفول');return}st.note=ta.value.trim();$('#kbDlg').close();renderNote();toast(st.note?'اتحفظ التعليق: هيظهر ع الفاتورة وفي أوردر المطبخ':'اتمسح التعليق')}})};
+(()=>{const L={ar:['١٢٣٤٥٦٧٨٩٠','ضصثقفغعهخحجد','شسيبلاتنمكطذ','ئءؤرىةوزظ'],en:['1234567890','qwertyuiop','asdfghjkl','zxcvbnm'],sy:['1234567890','!@#$%&*()+','-_=/\\:;"\'','?,.<>[]{}~']};let lay='ar',up=false;const ta=$('#kbT');
+const draw=()=>{const rows=L[lay];$('#kbK').innerHTML='<div class="kr"><button data-l="ar" class="'+(lay==='ar'?'ok':'')+'">عربي</button><button data-l="en" class="'+(lay==='en'?'ok':'')+'">English</button><button data-l="sy" class="'+(lay==='sy'?'ok':'')+'">رموز</button>'+(lay==='en'?'<button data-a="up" class="'+(up?'ok':'')+'">⇧ Aa</button>':'')+'</div>'+rows.map((r,ri)=>'<div class="kr" style="direction:'+(lay==='ar'?'rtl':'ltr')+'">'+[...r].map(c=>{const v=lay==='en'&&up?c.toUpperCase():c;return '<button data-c="'+v.replace(/"/g,'&quot;')+'">'+v+'</button>'}).join('')+'</div>').join('')+'<div class="kr"><button class="dl" data-a="bs">⌫ مسح حرف</button><button class="w" data-a="sp">مسافة</button><button data-c="،">،</button><button data-c=".">.</button><button data-c="-">-</button></div><div class="kr"><button class="dl" data-a="cl">مسح الكل</button><button class="ok w" data-a="ok">✔ تأكيد التعليق</button></div>';
+$$('#kbK [data-l]').forEach(b=>b.onclick=()=>{lay=b.dataset.l;draw()});
+$$('#kbK [data-c]').forEach(b=>b.onclick=()=>{ta.value+=b.dataset.c;ta.style.direction=lay==='en'?'ltr':'rtl';ta.focus()});
+$$('#kbK [data-a]').forEach(b=>b.onclick=()=>{const a=b.dataset.a;if(a==='up'){up=!up;draw()}else if(a==='bs')ta.value=ta.value.slice(0,-1);else if(a==='sp')ta.value+=' ';else if(a==='cl')ta.value='';else{if(st.locked){toast('الشيك مقفول');return}st.note=ta.value.trim();$('#kbDlg').close();renderNote();toast(st.note?'اتحفظ التعليق: هيظهر ع الفاتورة وفي أوردر المطبخ':'اتمسح التعليق')}})};
 window.renderNote=()=>{const e=$('#chkNote');e.classList.toggle('hidden',!st.note);e.textContent=st.note?'📝 '+st.note:''};
 const rc=renderCart;renderCart=function(){rc();renderNote()};
-$('#fnKbd').onclick=()=>{if(st.locked){toast('الشيك مقفول');return}ta.value=st.note||'';draw();$('#kbDlg').showModal();ta.focus()};
+$('#fnKbd').onclick=()=>{if(st.locked){toast('الشيك مقفول');return}ta.value=st.note||'';lay='ar';up=false;draw();$('#kbDlg').showModal();ta.focus()};
 $('#kbX').onclick=()=>$('#kbDlg').close();renderNote();
 })();
 </script></body></html>
