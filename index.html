@@ -353,7 +353,7 @@ $(V).style.cssText='';$(V).innerHTML='<div style="text-align:center;font-weight:
 const B=(t,fn,st2)=>{const b=document.createElement('button');b.textContent=t;b.style.cssText='flex:1;min-height:44px;font-weight:700;'+(st2||'');b.onclick=fn;return b};const A=$(AC);A.innerHTML='';
 if(k==='no'){A.append(B('🖥 فتح على شاشة الأوردر',()=>{$(D).close();enterLocked(no)}));if(o.open&&!o.voided)A.append(B('💵 تحصيل',()=>{$(D).close();loadOpen(o);openPay()},'background:#147c80;color:#fff'))}
 else if(k==='op')A.append(B('▶ كمّل الشيك',()=>{$(D).close();resume(no)},'background:#147c80;color:#fff'));else A.append(B('▶ رجوع للشاشة',()=>$(D).close()))}
-const openOrd=(f)=>{window.ckF=f||'all';$('#ckQ').value='';$('#ordView').innerHTML='<div class="em">اختار شيك من القايمة علشان تفاصيله تظهر هنا (عرض فقط)</div>';$('#ordAct').innerHTML='';ckRowsDraw();$('#ordDlg').showModal();$('#ckQ').focus()};
+const openOrd=(f)=>{window.ckF=f||'all';$('#ckQ').value='';$$('#ckFlt input').forEach(x=>x.value='');$('#ckFlt select').value='';$('#ordView').innerHTML='<div class="em">اختار شيك من القايمة علشان تفاصيله تظهر هنا (عرض فقط)</div>';$('#ordAct').innerHTML='';ckRowsDraw();$('#ordDlg').showModal();$('#ckQ').focus()};
 $('#tabOrd').onclick=()=>openOrd('all');$('#abFind').onclick=()=>openOrd('all');$('#ordX').onclick=()=>$('#ordDlg').close();
 
 window.apF='all';window.apS='printed';
@@ -372,7 +372,7 @@ $('#abApps').onclick=()=>{window.apF='all';window.apS='printed';$('#apQ').value=
 $('#apQ').oninput=apDraw;$('#apWX').onclick=()=>$('#appDlg').close();
 $('#spotBtn').onclick=()=>needMgr('تصريح مدير • سبوت شيك',u=>{renderBuckets();const sub=Object.values(st.bk).reduce((a,v)=>a+v,0),vc=st.orders.filter(o=>o.voided).length;$('#spotX').onclick=()=>$('#spotDlg').close();$('#spotDlg h2 span').textContent='سبوت شيك • '+u.n+' • إجمالي الحسابات '+f(sub)+(vc?' • شيكات ملغية '+vc:'');$('#spotDlg').showModal()},'spot');
 let ckSel=null;
-function ckRowsDraw(){const q=normPh($('#ckQ').value)||$('#ckQ').value.trim();const hit=(no,ph,ref,tb)=>!q||String(no).includes(q)||(ph&&normPh(ph).includes(q))||(ref&&ref.includes(q))||(tb&&String(tb)===q);
+function ckRowsDraw(){const q=normPh($('#ckQ').value)||$('#ckQ').value.trim().replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));const hit=(no,ph,ref,tb)=>!q||String(no).includes(q)||(ph&&normPh(ph).includes(q))||(ref&&ref.includes(q))||(tb&&String(tb)===q);
 const opens=[];if(!st.locked&&st.cart.length)opens.push({k:'cur',no:st.no,t:typeName(),cust:st.cust.name||'',ref:st.app?st.cust.ref||'':'',ph:st.cust.phone||'',tot:total(),tb:st.table});
 (st.parked||[]).forEach(p=>opens.push({k:'op',no:p.no,t:p.app||TYPES[p.type].n,cust:p.cust.name||'',ref:p.cust.ref||'',ph:p.cust.phone||'',tot:p.cart.reduce((a,l)=>a+l.p*l.q,0)*1.14,tb:p.table}));
 const F=window.ckF||'all',kind=o=>o.voided?'void':o.open?'printed':'closed';
@@ -457,13 +457,15 @@ Object.keys(M).forEach(k=>{const b=document.querySelector('[data-fn="'+k+'"]');i
 (()=>{const orig=ckRowsDraw;const nz=t=>(t||'').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/٫/g,'.').replace(/٬/g,'').replace(/,/g,'');
 const V=k=>{const e=document.querySelector('#ckFlt [data-k="'+k+'"]');return e?nz(e.value.trim()):''};
 ckRowsDraw=function(){orig();const nf=V('nf'),nt=V('nt'),sr=V('sr'),tb=V('tb'),who=V('who'),ty=V('ty'),cu=V('cu'),ph=V('ph'),ht=V('ht'),gf=V('gf'),gt=V('gt');
-const wRaw=document.querySelector('#ckFlt [data-k="who"]').value.trim(),cRaw=document.querySelector('#ckFlt [data-k="cu"]').value.trim(),tyRaw=document.querySelector('#ckFlt [data-k="ty"]').value,hRaw=document.querySelector('#ckFlt [data-k="ht"]').value.trim().replace(/^#/,'');
-let shown=0;$$('#ckRows tr').forEach(r=>{const c=r.cells;if(c.length<9)return;const id=+nz(c[0].textContent),ser=nz(c[1].textContent),tbl=c[3].textContent.trim(),wh=c[2].textContent,typ=c[5].textContent.trim(),cus=c[6].textContent,tot=parseFloat(nz(c[8].textContent));
+const wRaw=who,cRaw=document.querySelector('#ckFlt [data-k="cu"]').value.trim(),tyRaw=document.querySelector('#ckFlt [data-k="ty"]').value,hRaw=document.querySelector('#ckFlt [data-k="ht"]').value.trim().replace(/^#/,'');
+let shown=0;$$('#ckRows tr').forEach(r=>{const c=r.cells;if(c.length<9)return;const id=+nz(c[0].textContent),ser=nz(c[1].textContent),tbl=c[3].textContent.trim(),wh=nz(c[2].textContent),typ=c[5].textContent.trim(),cus=c[6].textContent,tot=parseFloat(nz(c[8].textContent));
 let ok=true;if(nf&&!(id>=+nf))ok=false;if(nt&&!(id<=+nt))ok=false;if(sr&&!ser.includes(sr))ok=false;if(tb&&tbl!==tb)ok=false;if(wRaw&&!wh.includes(wRaw))ok=false;if(tyRaw&&typ!==tyRaw)ok=false;
 const nm=cus.replace(/#\S+/g,'').replace(/[0-9٠-٩]{7,}/g,'');if(cRaw&&!nm.includes(cRaw))ok=false;if(ph&&!nz(cus).replace(/\D/g,'').includes(ph.replace(/\D/g,'')))ok=false;if(hRaw&&!cus.includes('#'+hRaw))ok=false;if(gf&&!(tot>=+gf))ok=false;if(gt&&!(tot<=+gt))ok=false;
 r.style.display=ok?'':'none';if(ok)shown++});
-if(!shown&&$('#ckRows tr td[colspan]')===null&&$$('#ckRows tr').length)$('#ckRows').insertAdjacentHTML('beforeend','<tr><td colspan="9" style="text-align:center;color:#888;padding:20px">مفيش شيك بالفلاتر دي</td></tr>')};
+$$('#ckFlt input,#ckFlt select').forEach(e=>e.style.outline=e.value?'2px solid #e0b020':'');const act=$$('#ckFlt input,#ckFlt select').filter(e=>e.value).length||$('#ckQ').value;if(!shown&&act&&$$('#ckRows tr').length){$('#ckRows').insertAdjacentHTML('beforeend','<tr><td colspan="9" style="text-align:center;color:#444;padding:20px">مفيش شيك بالفلاتر دي<br><button id="ckClr2" style="margin-top:8px;min-height:40px;padding:0 16px;background:#c8102e;color:#fff;border:0;border-radius:6px;font-weight:700">✕ مسح الفلاتر وعرض الكل</button></td></tr>');$("#ckClr2").onclick=()=>$('#ckClr').click()}};
+$$('#ckTabs').forEach(()=>0);
 $$('#ckFlt input,#ckFlt select').forEach(e=>{e.oninput=e.onchange=()=>ckRowsDraw()});
+$('#ckTabs').addEventListener('click',e=>{if(e.target.closest('[data-f]')){$$('#ckFlt input').forEach(x=>x.value='');$('#ckFlt select').value='';$('#ckQ').value=''}},true);
 $('#ckClr').onclick=()=>{$$('#ckFlt input').forEach(e=>e.value='');$('#ckFlt select').value='';$('#ckQ').value='';ckRowsDraw()};
 })();
 </script></body></html>
