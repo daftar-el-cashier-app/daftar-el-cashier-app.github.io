@@ -276,7 +276,7 @@ $('#custBtn').onclick=()=>{$('#csQ').value='';csDraw();$('#custDlg').showModal()
 function setMe(u){st.me=u;$('#meChip').textContent=u?u.n+' • '+RL[u.r]:'—';$('#loginScr').classList.toggle('hidden',!!u);drawPerms();if(u){$('#lgPw').value='';$('#lgMsg').textContent=''}}
 function doLogin(){const u=STAFF[$('#lgId').value.trim()];if(!u||u.p!==$('#lgPw').value){$('#lgMsg').textContent='رقم الموظف أو الباسورد غلط';return}setMe(u);toast('أهلاً '+u.n)}
 $('#lgOk').onclick=doLogin;$('#lgPw').onkeydown=e=>{if(e.key==='Enter')doLogin()};
-const doLogout=()=>{exitLocked();if(st.cart.length&&!confirm('فيه شيك مفتوح. هيتحفظ ويتقفل الدخول. تكمل؟'))return;if(st.cart.length){st.cart=[];renderCart()}$('#lgId').value='';setMe(null);document.querySelector('.tabs [data-tab=sale]').click();$$('dialog[open]').forEach(d=>d.close())};$('#logoutBtn').onclick=doLogout;$('#logoutBd').onclick=doLogout;
+const doLogout=()=>{$$('dialog[open]').forEach(d=>{try{d.close()}catch(e){}});exitLocked();let kept=0;if(st.cart.length||st.table){kept=st.no;parkNow();st.no=nextNo();blank('dine','','')}$('#lgId').value='';setMe(null);document.querySelector('.tabs [data-tab=sale]').click();if(kept)toast('اتحفظ الشيك #'+kept+' معلّق على الجهاز');document.body.classList.remove('locked')};$('#logoutBtn').onclick=doLogout;$('#logoutBd').onclick=doLogout;
 $('#lgId').focus&&0;
 
 
