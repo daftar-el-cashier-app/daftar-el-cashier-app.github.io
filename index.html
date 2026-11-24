@@ -117,7 +117,7 @@ dialog.stl{padding:0;border:0;border-radius:10px;background:#1b2531;color:#e8eef
 <div class="fn3"><button data-fn="void">إلغاء صنف</button><button data-fn="disc">خصم صنف</button><button data-fn="notes">ملاحظات الصنف</button><button data-fn="eat">صالة / تيك أواي</button><button data-fn="xfer">نقل صنف</button><button data-fn="combo">تعديل كومبو</button></div>
 <div class="amtrow"><div class="amt-r" id="lastAmt">٠٫٠٠</div><div class="amt-g" id="qe">1</div></div>
 <div class="pad" id="pad"></div>
-<div class="fn4"><button data-fn="rep">تقارير</button><button data-fn="tools">أدوات الشيك</button><button data-fn="amend">تعديل الشيك</button><button data-fn="other">أدوات تانية</button><button data-fn="tbl">تغيير الطاولة</button><button data-fn="split">تقسيم الشيك</button><button id="preview">معاينة الشيك</button><button class="key" data-fn="key">🔑 تصريح</button></div>
+<div class="fn4"><button data-fn="rep">تقارير</button><button data-fn="tools">أدوات الشيك</button><button data-fn="amend">تعديل الشيك</button><button data-fn="other">أدوات تانية</button><button data-fn="tbl">تغيير الطاولة</button><button data-fn="split">تقسيم الشيك</button><button id="preview">معاينة الشيك</button><button class="key" id="logoutBd" style="color:#ff8a9a">⎋ تسجيل الخروج</button></div>
 <div class="sumbar"><div><small>قبل الضريبة</small><bdi id="sub"></bdi></div><div><small>ضريبة ١٤٪</small><bdi id="vat"></bdi></div><div class="gt"><small>الإجمالي</small><bdi id="tot"></bdi></div></div>
 <button class="payb" id="payBtn">تحصيل</button>
 </aside></div></div>
@@ -252,7 +252,7 @@ $('#custBtn').onclick=()=>{$('#csQ').value='';csDraw();$('#custDlg').showModal()
 function setMe(u){st.me=u;$('#meChip').textContent=u?u.n+' • '+RL[u.r]:'—';$('#loginScr').classList.toggle('hidden',!!u);drawPerms();if(u){$('#lgPw').value='';$('#lgMsg').textContent=''}}
 function doLogin(){const u=STAFF[$('#lgId').value.trim()];if(!u||u.p!==$('#lgPw').value){$('#lgMsg').textContent='رقم الموظف أو الباسورد غلط';return}setMe(u);toast('أهلاً '+u.n)}
 $('#lgOk').onclick=doLogin;$('#lgPw').onkeydown=e=>{if(e.key==='Enter')doLogin()};
-$('#logoutBtn').onclick=()=>{if(st.cart.length&&!confirm('فيه شيك مفتوح. هيتحفظ ويتقفل الدخول. تكمل؟'))return;if(st.cart.length){st.cart=[];renderCart()}$('#lgId').value='';setMe(null);document.querySelector('.tabs [data-tab=sale]').click();$$('dialog[open]').forEach(d=>d.close())};
+const doLogout=()=>{if(st.cart.length&&!confirm('فيه شيك مفتوح. هيتحفظ ويتقفل الدخول. تكمل؟'))return;if(st.cart.length){st.cart=[];renderCart()}$('#lgId').value='';setMe(null);document.querySelector('.tabs [data-tab=sale]').click();$$('dialog[open]').forEach(d=>d.close())};$('#logoutBtn').onclick=doLogout;$('#logoutBd').onclick=doLogout;
 $('#lgId').focus&&0;
 let ckSel=null;
 function ckRowsDraw(){const q=normPh($('#ckQ').value)||$('#ckQ').value.trim();const rows=st.orders.slice().reverse().filter(o=>!q||String(o.no).includes(q)||(o.ph&&normPh(o.ph).includes(q))||(o.ref&&o.ref.includes(q)));
