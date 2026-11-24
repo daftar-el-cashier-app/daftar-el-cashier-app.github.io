@@ -1,1 +1,1 @@
-{"name":"دفتر الكاشير","short_name":"الكاشير","start_url":"./","display":"standalone","dir":"rtl","lang":"ar","background_color":"#f4efec","theme_color":"#176d59","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml"}]}
+{"name":"دفتر الكاشير","short_name":"الكاشير","start_url":"./","display":"standalone","dir":"rtl","lang":"ar","background_color":"#8b1a14","theme_color":"#8b1a14","icons":[{"src":"icon.png","sizes":"512x512","type":"image/png","purpose":"any"}]}
