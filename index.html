@@ -1586,7 +1586,7 @@ window.setNav=function(){orig.apply(this,arguments);const nav=D.getElementById('
   const box=D.createElement('div');box.innerHTML=h;fl.after(...box.childNodes);
   const up=()=>{R.f=sec.querySelector('#xfF').value||R.f;R.t=sec.querySelector('#xfT').value||R.t;window.xfSet()};
   sec.querySelector('#xfF').onchange=up;sec.querySelector('#xfT').onchange=up;
-  sec.querySelectorAll('div').forEach(d=>{if(!d.children.length&&d.textContent.indexOf('صادر أو وارد')===0)d.textContent='In / Out بين الفروع. بتتسجل في سجل العمليات.'});const hd=sec.querySelector('.sx b');if(hd&&hd.textContent==='تحويل جديد')hd.textContent='New transfer';
+  sec.querySelectorAll('div').forEach(d=>{if(!d.children.length&&d.textContent.indexOf('صادر أو وارد')===0)d.textContent='In / Out بين الفروع. بتتسجل في سجل العمليات.'});sec.querySelectorAll('p').forEach(p=>{if(p.textContent.indexOf('صادر أو وارد')>-1)p.textContent='In / Out بين الفروع. بتتسجل في سجل العمليات.'});const hd=sec.querySelector('.sx b');if(hd&&hd.textContent==='تحويل جديد')hd.textContent='New transfer';
   return r};
 })();
 /* الجرد: من غير رصيد وقت العد، والنتيجة بعد الحفظ */
