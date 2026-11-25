@@ -1604,11 +1604,15 @@ window.setNav=function(){orig.apply(this,arguments);const nav=D.getElementById('
   sec.querySelectorAll('.cq').forEach(i=>{const s=i.closest('.sx');s.querySelectorAll('span').forEach(x=>x.remove())});
   const d=sec.querySelector('.hd,h3,h2');sec.querySelectorAll('div,p').forEach(x=>{if(!x.children.length&&x.textContent.indexOf('اكتب الكمية الفعلية')===0)x.textContent='اكتب الكمية الفعلية اللي عندك لكل خامة واحفظ الجرد. النتيجة بتظهر بعد الحفظ.'});
   const sv=sec.querySelector('#cnSave').closest('.sx');while(sv.nextSibling)sv.nextSibling.remove();
+  const sb=sec.querySelector('#cnSave'),f0=sb.onclick;sb.onclick=function(){const n=(st.counts||[]).length;f0.apply(this,arguments);if((st.counts||[]).length>n){window.__cnRes=1;window.cntSet()}};
+  if(window.__cnRes&&C.length){[...sec.children].forEach(x=>{if(x.classList.contains('sx')||x.tagName==='B')x.remove()});
+   const bk=D.createElement('div');bk.className='sx';bk.innerHTML='<button id="cnNew">جرد جديد</button>';sec.appendChild(bk);bk.querySelector('button').onclick=()=>{window.__cnRes=0;window.cntSet()}}
+  else if(false){}
   if(C.length){const c=C[0];if(!c.det)calc(c);const p=(st.counts||[])[1];
    let h='<b>نتيجة آخر جرد: '+new Date(c.ts).toLocaleString('en-GB')+'</b><div style="color:#666;font-size:13px;margin:4px 0">الفترة: '+(p?'من '+new Date(p.ts).toLocaleString('en-GB'):'من البداية')+' لحد وقت الجرد</div><div style="overflow:auto"><table style="width:100%;border-collapse:collapse;font-size:13px;text-align:center"><tr style="background:#eee">'+['الخامة','Opening (أول المدة)','Purchases','In','Out','Waste','Consumption','Expected','Counted','Short / Over'].map(x=>'<th style="padding:6px;border:1px solid #ddd">'+x+'</th>').join('')+'</tr>';
    (c.rows||[]).forEach(r=>{const df=Math.round(r.diff*100)/100,lab=df<0?'Short '+nf(-df):df>0?'Over '+nf(df):'OK';const col=df<0?'#c8102e':df>0?'#b26a00':'#2e7d32';
     h+='<tr><td style="padding:6px;border:1px solid #ddd;text-align:right"><b>'+(I[r.k]?I[r.k][0]+' ('+I[r.k][1]+')':r.k)+'</b></td>'+[r.open,r.pur,r.xin,r.xout,r.wst,r.con,r.exp,r.q].map(v=>'<td style="padding:6px;border:1px solid #ddd">'+nf(v)+'</td>').join('')+'<td style="padding:6px;border:1px solid #ddd;color:'+col+'"><b>'+lab+'</b></td></tr>'});
-   h+='</table></div>';const bx=D.createElement('div');bx.className='sx';bx.style.display='block';bx.innerHTML=h;sec.appendChild(bx)}
+   h+='</table></div>';const bx=D.createElement('div');bx.className='sx';bx.style.display='block';bx.innerHTML=h;sec.appendChild(bx);if(window.__cnRes){const nb=D.getElementById('cnNew');if(nb)nb.closest('.sx').before(bx)}}
   return r0};
 })();
 /* أيقونات SVG بدل الإيموجي (خطوط رفيعة، قريبة من Foodics) - مفيش مربعات فاضية */
