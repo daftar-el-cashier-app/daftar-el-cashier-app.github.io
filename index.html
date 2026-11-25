@@ -408,7 +408,7 @@ $('#apNew').onclick=()=>{$('#appDlg').close();window.__apBtns&&window.__apBtns()
 $$('#apGrid [data-i]').forEach(b=>b.onclick=()=>{$$('#apGrid .aptile').forEach(x=>x.classList.toggle('sel',x===b));const x=L[b.dataset.i];showOrdK(x.k,x.no,'#apView','#apAct','#appDlg')})}
 $('#abApps').onclick=()=>{window.apF='all';window.apS='printed';$('#apQ').value='';$('#apView').innerHTML='اضغط على أوردر علشان يظهر هنا (عرض فقط)';$('#apView').style.cssText='color:#666;text-align:center;padding:40px 0';$('#apAct').innerHTML='';apDraw();$('#appDlg').showModal()};
 $('#apQ').oninput=apDraw;$('#apWX').onclick=()=>$('#appDlg').close();
-$('#spotBtn').onclick=()=>needMgr('تصريح مدير • سبوت شيك',u=>{renderBuckets();window.spotPaper(u);const sub=Object.values(st.bk).reduce((a,v)=>a+v,0),vc=st.orders.filter(o=>o.voided).length;$('#spotX').onclick=()=>$('#spotDlg').close();$('#spotDlg h2 span').textContent='سبوت شيك • '+u.n+' • إجمالي الحسابات '+f(sub)+(vc?' • شيكات ملغية '+vc:'');$('#spotDlg').showModal()},'spot');
+$('#spotBtn').onclick=()=>needMgr('تصريح مدير • سبوت شيك',u=>{try{renderBuckets()}catch(e){}window.spotPaper(u);const sub=Object.values(st.bk||{}).reduce((a,v)=>a+v,0),vc=st.orders.filter(o=>o.voided).length;$('#spotX').onclick=()=>$('#spotDlg').close();$('#spotDlg h2 span').textContent='Spot Check • '+u.n;$('#spotDlg').showModal()},'spot');
 let ckSel=null;
 function ckRowsDraw(){const q=normPh($('#ckQ').value)||$('#ckQ').value.trim().replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));const hit=(no,ph,ref,tb)=>!q||String(no).includes(q)||(ph&&normPh(ph).includes(q))||(ref&&ref.includes(q))||(tb&&String(tb)===q);
 const opens=[];if(!st.locked&&st.cart.length)opens.push({k:'cur',no:st.no,t:typeName(),cust:st.cust.name||'',ref:st.app?st.cust.ref||'':'',ph:st.cust.phone||'',tot:total(),tb:st.table});
@@ -727,17 +727,9 @@ const kp=(l,v,c)=>'<div style="flex:1;min-width:130px;background:'+c+';color:#ff
 const TB=x=>'<table style="width:100%;border-collapse:collapse;font-size:14px">'+x+'</table>';
 const PNa={cash:'كاش',visa:'فيزا',tlb_visa:'طلبات / فيزا',tlb_cash:'طلبات / كاش',insta:'انستاشوب / فيزا',zyda:'زيادة / كاش'};
 const GA={'Pies':'فطائر','Hawawshi':'حواوشي','Desserts':'حلويات','Beverages':'مشروبات','Side Order':'جانبي','Bundles':'باندل','Other':'أخرى'};
-$('#spotBody').innerHTML='<div style="color:#555;margin-bottom:8px;font-size:13px">'+brn+' • '+dt+' • كل الشيفتات • كل الأقسام • كل الكاشير • '+u.n+'</div>'+
-'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">'+kp('الإجمالي النهائي',m2(gross-disc),'#147c80')+kp('إجمالي النقدي (كاش)',m2(cashT),'#2f8f4e')+kp('قبل الضريبة',m2(net),'#172b40')+kp('ضريبة ١٤٪',m2(vat),'#3a6ea5')+kp('عدد الشيكات',all.length+openN,'#e0561a')+kp('متوسط الشيك',m2((gross-disc)/nlive),'#7a4cc2')+'</div>'+
-'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px">'+
-card('💳 طرق الدفع',TB(Object.keys(pay).map(k=>row(pmLabel(k),m2(pay[k]),cnt[k]+' شيك')).join('')||'<tr><td style="padding:8px;color:#888">مفيش شيكات مقفولة لسه</td></tr>')+(dTlb?TB(row('خصم طلبات',m2(-dTlb))):''))+
-card('🍽 المبيعات حسب القسم (قبل الضريبة)',TB(Object.entries(grp).map(([g,v])=>row(GA[g]||g,m2(v))).join('')+row('الإجمالي',m2(net),undefined,1)))+
-card('🧾 الحساب',TB(row('قبل الضريبة',m2(net))+row('ضريبة ١٤٪',m2(vat))+row('بعد الضريبة',m2(gross))+row('خصم طلبات',m2(-dTlb))+row('خصم أصناف',m2(-idisc))+row('ضيافة',m2(-cdisc))+row('إجمالي الخصومات',m2(-disc))+row('الإجمالي النهائي',m2(gross-disc),undefined,1)+row('إجمالي النقدي (كاش)',m2(cashT),cashN+' شيك',1)))+
-card('🛵 المبيعات حسب النوع',TB(row('صالة',m2(T.e[0]),T.e[1]+' شيك')+row('تيك أواي',m2(T.t[0]),T.t[1]+' شيك')+row('دليفري وتطبيقات',m2(T.d[0]),T.d[1]+' شيك'))+TB(row('متوسط الشيك (صافي)',m2((gross-disc)/1.14/nlive))+row('متوسط الشيك (إجمالي)',m2((gross-disc)/nlive))+row('شيكات مسؤول',m2(offV),offL.length)+row('عدد الأفراد',covers)))+
-card('📊 حالة الشيكات',TB(row('مفتوحة',openN)+row('برنت (مطبوعة)',prn.length)+row('مقفولة',done.length)+row('متفودة',vd.length)+row('إجمالي الشيكات',all.length+openN,undefined,1)+row('كمية متفودة',vq)+row('تقسيم شيكات',spl)+row('نقل شيكات/أصناف',mv)+row('شيكات مدموجة',mrg)+row('تبديل أوردرات',swt)+row('أصناف ضيافة',cq)))+
-'</div><div style="text-align:center;margin-top:12px"><button id="spotPr" style="min-height:46px;padding:0 26px;background:#147c80;color:#fff;font-weight:800;font-size:16px">🖨 معاينة الطباعة (رول)</button></div>';
+$('#spotBody').innerHTML='<div style="background:#d9dfe4;padding:14px;max-height:72vh;overflow:auto">'+P+'</div><div style="text-align:center;margin-top:10px"><button id="spotPr" style="min-height:46px;padding:0 26px;background:#147c80;color:#fff;font-weight:800;font-size:16px">🖨 طباعة</button></div><div id="buckets" style="display:none"></div><table style="display:none"><tbody id="orders"></tbody></table>';
 window.__spotP=P;
-$('#spotPr').onclick=()=>{$('#spotRollB').innerHTML=window.__spotP;$('#spotRoll').showModal()};
+$('#spotPr').onclick=()=>{(st.audit=st.audit||[]).push(['برنت','طباعة سبوت شيك • '+(st.me?st.me.n:''),'']);toast('اتبعت للطابعة (دمو: مفيش طابعة حقيقية)')};
 };
 })();
 $('#spotRX').onclick=()=>$('#spotRoll').close();$('#spotRP').onclick=()=>{(st.audit=st.audit||[]).push(['برنت','طباعة سبوت شيك • '+(st.me?st.me.n:''),'']);$('#spotRoll').close();toast('اتبعت للطابعة (دمو: مفيش طابعة حقيقية)')};
@@ -1515,7 +1507,7 @@ window.setNav=function(){orig.apply(this,arguments);const nav=D.getElementById('
   Q('#langMenu').querySelector('[data-l=ar]').classList.add('on')}
  const openSum=()=>{const t=Q('#tabSum');if(!t||t.classList.contains('hidden')){}try{const d=Q('#spotDlg');if(d&&d.open)d.close()}catch(e){}const ts=Q('#tabSet');if(ts)ts.click();window.__setSec='sumSet';if(window.setNav)window.setNav();if(window.__sumDraw)window.__sumDraw()};
  window.__openSum=openSum;
- const UI=[['spotSet','سطور السبوت شيك'],['featSet','الخصائص'],['btnSet','أزرار الكاشير'],['cuSet','أزرار خاصة']];let uiOpen=false;
+ const UI=[['spotSet','سطور السبوت شيك'],['featSet','الخصائص'],['btnSet','أزرار الكاشير']];let uiOpen=false;
  const o=window.setNav;window.setNav=function(){o.apply(this,arguments);const nav=D.getElementById('setNav');
   if(nav){const c=window.__setSec||'sumSet',inUI=UI.some(x=>x[0]===c);if(inUI)uiOpen=true;
    UI.forEach(([k])=>{const e=nav.querySelector('[data-s="'+k+'"]');if(e)e.style.display='none'});
