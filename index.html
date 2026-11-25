@@ -698,7 +698,7 @@ sec.querySelectorAll('.fst').forEach(b=>b.onclick=()=>{O[b.dataset.k]=!O[b.datas
 window.spotSet=()=>{const OFF=st.spotOff=st.spotOff||{};const sec=document.getElementById('spotSet')||(()=>{const d=document.createElement('div');d.id='spotSet';d.style.cssText='margin:18px 0';document.querySelector('#setTab .panel').appendChild(d);return d})();
 sec.innerHTML='<b>سطور السبوت شيك</b><p style="color:var(--muted);font-size:13px;margin:4px 0 8px">شغّل أو الغي أي سطر. بيتطبق على الرول المطبوع.</p><div style="display:flex;gap:8px;margin-bottom:8px"><button id="spAll" style="min-height:40px;padding:0 14px">تشغيل الكل</button><button id="spNone" style="min-height:40px;padding:0 14px">إلغاء الكل</button></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:6px">'+SPOTK.map(([k,n,e])=>'<button class="spt" data-k="'+k+'" style="min-height:44px;text-align:right;display:flex;justify-content:space-between;align-items:center;padding:0 12px;'+(OFF[k]?'opacity:.55':'')+'"><span>'+n+' <small style="color:var(--muted)">'+e+'</small></span></button>').join('')+'</div>';
 sec.querySelectorAll('.spt').forEach(b=>b.onclick=()=>{OFF[b.dataset.k]=!OFF[b.dataset.k];spotSet()});featSet();paySet();btnSet();menuSet();cuSet();custSet();invSet();supSet();poSet();xfSet();cntSet();prodSet();setNav();$('#spAll').onclick=()=>{st.spotOff={};spotSet()};$('#spNone').onclick=()=>{SPOTK.forEach(x=>OFF[x[0]]=true);spotSet()}};
-window.spotPaper=u=>{const all=st.orders,done=all.filter(o=>!o.voided&&!o.open),prn=all.filter(o=>!o.voided&&o.open),vd=all.filter(o=>o.voided),live=all.filter(o=>!o.voided);
+window.spotPaper=u=>{const all=window.__spotDay?st.orders.filter(o=>!o.ts||new Date(o.ts).toDateString()===window.__spotDay):st.orders,done=all.filter(o=>!o.voided&&!o.open),prn=all.filter(o=>!o.voided&&o.open),vd=all.filter(o=>o.voided),live=all.filter(o=>!o.voided);
 const PN={cash:'Cash',visa:'Visa',tlb_visa:'Talabat/Visa',tlb_cash:'Talabat/Cash',insta:'Instashop/Visa',zyda:'Ziada/Cash',tlb_disc:'Talabat Discount'};
 const pay={},cnt={};done.forEach(o=>Object.entries(o.pay||{}).forEach(([k,v])=>{if(v>0&&k!=='tlb_disc'){pay[k]=(pay[k]||0)+v;cnt[k]=(cnt[k]||0)+1}}));
 const IT=o=>o.items||[];const gA=live.reduce((a,o)=>a+o.total,0);
@@ -1522,6 +1522,36 @@ window.setNav=function(){orig.apply(this,arguments);const nav=D.getElementById('
   const x=Q('#spotX');if(x&&!Q('#spotSumBtn')){x.insertAdjacentHTML('beforebegin','<button id="spotSumBtn" style="min-height:36px;margin-inline-end:6px">📈 الملخص</button>');Q('#spotSumBtn').onclick=openSum}
   const rb=Q('#rpExpBtn');if(rb&&!Q('#rpSumBtn')){rb.insertAdjacentHTML('afterend','<button id="rpSumBtn" style="min-height:34px">📈 الملخص</button>');Q('#rpSumBtn').onclick=openSum}};
  setInterval(fix,500);fix();
+})();
+
+/* سبوت شيك والاستهلاك: نافذة اختيار تاريخ العمل (زي Foodics) قبل العرض */
+(()=>{const D=document,Q=s=>D.querySelector(s);if(window.__spDate)return;window.__spDate=1;
+ const AD=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+ const MN=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+ const WD=['سبت','أحد','اثنين','ثلاثاء','أربعاء','خميس','جمعة'];
+ const dl=D.createElement('dialog');dl.id='spDate';dl.style.cssText='width:min(420px,96vw);border:0;border-radius:12px;padding:0;background:#f6f4ee;box-shadow:0 8px 30px #0006';
+ D.body.appendChild(dl);
+ let sel=new Date(),vm=new Date(),ttl='',go=null;const z=n=>('0'+n).slice(-2),fmt=d=>d.getFullYear()+'/'+z(d.getMonth()+1)+'/'+z(d.getDate());
+ const td=()=>{const t=new Date();t.setHours(0,0,0,0);return t};
+ const draw=()=>{const y=vm.getFullYear(),m=vm.getMonth(),first=new Date(y,m,1),off=(first.getDay()+1)%7,dim=new Date(y,m+1,0).getDate(),T=td();
+  let cells='';for(let i=0;i<off;i++)cells+='<span></span>';
+  for(let d=1;d<=dim;d++){const dt=new Date(y,m,d),fut=dt>T,on=dt.getTime()===new Date(sel.getFullYear(),sel.getMonth(),sel.getDate()).getTime();
+   cells+='<button type="button" data-d="'+d+'" '+(fut?'disabled ':'')+'style="min-height:44px;border:0;background:'+(on?'#2b7bbf':'transparent')+';color:'+(on?'#fff':fut?'#bbb':'#222')+';border-radius:50%;width:44px;height:44px;margin:auto;font-size:18px">'+AD(d)+'</button>'}
+  const nextFut=new Date(y,m+1,1)>T;
+  dl.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;color:#2b7bbf;font-size:16px"><button id="spBk" type="button" style="border:0;background:none;color:#2b7bbf;font-size:16px;min-height:36px">رجوع</button><b style="color:#444;font-weight:600">'+ttl+'</b><button id="spGo" type="button" style="border:0;background:none;color:#2b7bbf;font-size:16px;font-weight:700;min-height:36px">عرض</button></div>'+
+  '<div style="display:flex;justify-content:space-between;padding:12px 16px;background:#fbfaf6;border-top:1px solid #e3e0d6;border-bottom:1px solid #e3e0d6"><span style="color:#333">تاريخ العمل</span><span dir="ltr" style="color:#2b7bbf">'+fmt(sel)+'</span></div>'+
+  '<div style="padding:14px 18px 18px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><b style="font-size:18px">‹ '+MN[m]+' '+AD(y)+'</b><span style="display:flex;gap:18px"><button id="spNx" type="button" '+(nextFut?'disabled ':'')+'style="border:0;background:none;font-size:24px;color:'+(nextFut?'#bbb':'#2b7bbf')+'">‹</button><button id="spPv" type="button" style="border:0;background:none;font-size:24px;color:#2b7bbf">›</button></span></div>'+
+  '<div style="display:grid;grid-template-columns:repeat(7,1fr);text-align:center;color:#555;font-size:14px;margin-bottom:4px">'+WD.map(w=>'<span>'+w+'</span>').join('')+'</div><div style="display:grid;grid-template-columns:repeat(7,1fr);row-gap:6px;text-align:center">'+cells+'</div></div>';
+  dl.querySelector('#spBk').onclick=()=>dl.close();
+  dl.querySelector('#spPv').onclick=()=>{vm=new Date(y,m-1,1);draw()};
+  const nx=dl.querySelector('#spNx');if(!nextFut)nx.onclick=()=>{vm=new Date(y,m+1,1);draw()};
+  dl.querySelectorAll('[data-d]').forEach(x=>{if(!x.disabled)x.onclick=()=>{sel=new Date(y,m,+x.dataset.d);draw()}});
+  dl.querySelector('#spGo').onclick=()=>{const d=sel;dl.close();go(d)}};
+ const pick=(t,cb)=>{ttl=t;go=cb;sel=new Date();vm=new Date(sel.getFullYear(),sel.getMonth(),1);draw();dl.showModal()};
+ const sp=Q('#spotBtn'),so=sp&&sp.onclick;
+ if(typeof so==='function')sp.onclick=()=>pick('سبوت شيك',d=>{window.__spotDay=d.toDateString();so.call(sp)});
+ const ex=Q('#rpExpBtn'),eo=ex&&ex.onclick;
+ if(typeof eo==='function')ex.onclick=()=>pick('الاستهلاك',d=>{const iso=d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate());try{st.per='range';st.rf=iso;st.rt=iso}catch(e){}eo.call(ex)});
 })();
 
 </script></body></html>
